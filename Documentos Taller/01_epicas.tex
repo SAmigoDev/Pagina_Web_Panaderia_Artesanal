@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{ragged2e}
+
+\title{Ejemplo de Solución \\ Épicas y Features alineadas con objetivos de mejora}
+\author{Curso IA para ISW}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Contexto}
+Este ejemplo corresponde a la rúbrica del criterio \emph{``Épicas y features claramente definidas y alineadas con objetivos de mejora''}.  
+Se utiliza como caso de referencia el desarrollo de un módulo web de \textbf{Autenticación y Catálogo}, dentro de un marco ágil (SAFe).
+
+\section*{Ejemplo de Backlog de Alto Nivel}
+
+\begin{longtable}{>{\RaggedRight}p{3cm} >{\RaggedRight}p{5.5cm} >{\RaggedRight\arraybackslash}p{6cm}}
+\toprule
+\textbf{Épica} & \textbf{Features asociadas} & \textbf{Objetivo de mejora alineado} \\
+\midrule
+\textbf{E1: Autenticación Segura} & 
+\begin{itemize}
+  \item F1. Registro de usuario con validación de credenciales.
+  \item F2. Inicio de sesión con control de intentos fallidos.
+  \item F3. Recuperación de contraseña mediante token temporal.
+\end{itemize}
+&
+\begin{itemize}
+  \item Incrementar la seguridad y confiabilidad en el acceso al sistema.
+  \item Reducir riesgos de accesos indebidos.
+  \item Mejorar la experiencia del usuario en procesos de login y recuperación.
+\end{itemize} \\
+\midrule
+\textbf{E2: Catálogo Navegable y Usable} &
+\begin{itemize}
+  \item F4. Visualización de listado de productos con paginación.
+  \item F5. Búsqueda y filtros dinámicos por categoría.
+  \item F6. Vista de detalle de producto con disponibilidad en tiempo real.
+\end{itemize}
+&
+\begin{itemize}
+  \item Mejorar la usabilidad del catálogo.
+  \item Reducir el tiempo de búsqueda de productos.
+  \item Aumentar la satisfacción y retención de usuarios.
+\end{itemize} \\
+\midrule
+\textbf{E3: Soporte Operacional y Calidad} &
+\begin{itemize}
+  \item F7. Integración de pruebas automatizadas de regresión.
+  \item F8. Pipeline de integración continua para despliegues ágiles.
+\end{itemize}
+&
+\begin{itemize}
+  \item Reducir defectos en producción.
+  \item Aumentar la velocidad de entrega de nuevas funcionalidades.
+  \item Asegurar cumplimiento del \emph{Definition of Done (DoD)}.
+\end{itemize} \\
+\bottomrule
+\end{longtable}
+
+\section*{Notas de la solución esperada}
+\begin{itemize}
+  \item Cada \textbf{épica} representa un objetivo estratégico (seguridad, usabilidad, calidad).
+  \item Las \textbf{features} son entregables significativos que permiten medir progreso hacia la épica.
+  \item Los \textbf{objetivos de mejora} están alineados a métricas del equipo (seguridad, satisfacción, velocidad de entrega).
+\end{itemize}
+
+\end{document}

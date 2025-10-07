@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería Dulce Hogar - Solicitar Anulación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">🥐 PANADERÍA ARTESANAL "DULCE HOGAR"</span>
+            <div class="d-flex">
+                <button class="btn btn-outline-secondary">Mi Cuenta</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">Solicitar Anulación de Pedido</h2>
+                
+                <!-- Información del Pedido -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Pedido Elegible para Anulación #PAN-2025-022</h5>
+                        
+                        <div class="alert alert-info mb-3">
+                            <strong>Estado:</strong> 🕒 En preparación (desde 09:15)
+                        </div>
+                        
+                        <h6>Productos del Pedido:</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item">🎂 Torta Cumpleaños - $12,990</li>
+                            <li class="list-group-item">🥐 Facturas Especiales - $5,500</li>
+                            <li class="list-group-item">☕ Café Molido - $3,990</li>
+                            <li class="list-group-item"><strong>Total: $22,480</strong></li>
+                        </ul>
+                        
+                        <div class="alert alert-warning">
+                            <small>ⓘ Las anulaciones pueden procesarse hasta 30 minutos después de confirmado el pedido.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Anulación -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Formulario de Anulación</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Motivo de anulación</label>
+                            <select class="form-select">
+                                <option>Selecciona un motivo</option>
+                                <option>Cambio de opinión</option>
+                                <option>Error en el pedido</option>
+                                <option>Problemas de entrega</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Explicación adicional</label>
+                            <textarea class="form-control" rows="4" placeholder="Describe el motivo de tu solicitud..."></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de anulación</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipoAnulacion" id="reembolso">
+                                <label class="form-check-label" for="reembolso">
+                                    Reembolso total del pedido
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipoAnulacion" id="reemplazo">
+                                <label class="form-check-label" for="reemplazo">
+                                    Reemplazo de productos defectuosos
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipoAnulacion" id="modificacion">
+                                <label class="form-check-label" for="modificacion">
+                                    Modificación del pedido
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button class="btn btn-outline-secondary me-md-2">CANCELAR</button>
+                            <button class="btn btn-warning">ENVIAR SOLICITUD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

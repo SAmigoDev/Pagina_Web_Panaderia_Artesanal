@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{pdflscape}
+\tcbset{colback=gray!3,colframe=gray!45,arc=2mm,left=6pt,right=6pt,top=4pt,bottom=4pt}
+
+\title{Solución ejemplo: Tablero Kanban y WIP configurado}
+\author{Módulo Web: Autenticación \& Catálogo}
+\date{}
+
+\definecolor{colToDo}{HTML}{E3F2FD}
+\definecolor{colInProg}{HTML}{FFF3E0}
+\definecolor{colCR}{HTML}{F3E5F5}
+\definecolor{colTest}{HTML}{E8F5E9}
+\definecolor{colDone}{HTML}{ECEFF1}
+
+\begin{document}
+\maketitle
+
+\section*{Políticas del tablero y WIP (evidencia)}
+\begin{tcolorbox}
+\textbf{Columnas}: \texttt{To Do} \(\rightarrow\) \texttt{In Progress} \(\rightarrow\) \texttt{Code Review} \(\rightarrow\) \texttt{Testing} \(\rightarrow\) \texttt{Done}\\
+\textbf{Límites WIP por columna (equipo de 5 personas)}:\\
+\(\bullet\) \texttt{In Progress} \(\leq 5\) (máx.\ 1 tarjeta activa por persona) \quad
+\(\bullet\) \texttt{Code Review} \(\leq 4\) \quad
+\(\bullet\) \texttt{Testing} \(\leq 5\)\\
+\textbf{WIP personal}: cada persona \(\leq 1\) tarjeta simultánea en \texttt{In Progress}.\\
+\textbf{Reglas de Pull}: no iniciar trabajo si se viola WIP; priorizar \emph{swimlane} de épica activa; si \texttt{Testing} se acerca a WIP, activar \emph{swarming}.\\
+\textbf{Etiquetas}: \texttt{business}, \texttt{enabler}, \texttt{auth}, \texttt{catalog}, \texttt{bloqueado}, \texttt{DoD-ok}.
+\end{tcolorbox}
+
+\newpage
+\begin{landscape}
+\section*{Tablero Kanban}
+\vspace{4pt}
+
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{6pt}
+
+\begin{tabularx}{\linewidth}{>{\columncolor{colToDo}}X >{\columncolor{colInProg}}X >{\columncolor{colCR}}X >{\columncolor{colTest}}X >{\columncolor{colDone}}X}
+\multicolumn{1}{c}{\textbf{To Do}} &
+\multicolumn{1}{c}{\textbf{In Progress} \(\;\) (WIP $\leq$ 5)} &
+\multicolumn{1}{c}{\textbf{Code Review} \(\;\) (WIP $\leq$ 4)} &
+\multicolumn{1}{c}{\textbf{Testing} \(\;\) (WIP $\leq$ 5)} &
+\multicolumn{1}{c}{\textbf{Done}}\\
+\hline
+\small
+\textbf{B-05} Filtro cat.+texto \newline \emph{labels:} business,catalog \newline \emph{pts:} 3
+\newline\newline
+\textbf{E-03} Logging catálogo \newline \emph{labels:} enabler,logging,catalog \newline \emph{pts:} 2
+&
+\small
+\textbf{B-04} Listado paginado \newline \emph{labels:} business,catalog \newline \emph{owner:} Dev-A \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{B-06} Detalle producto \newline \emph{labels:} business,catalog \newline \emph{owner:} Dev-B \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{E-01} Pipeline CI \newline \emph{labels:} enabler,ci,tests \newline \emph{owner:} DevOps \newline \emph{pts:} 2
+\newline\hrule\newline
+\textbf{B-02} Login con bloqueo \newline \emph{labels:} business,auth \newline \emph{owner:} Dev-C \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{B-03} Recuperar contraseña \newline \emph{labels:} business,auth \newline \emph{owner:} Dev-D \newline \emph{pts:} 3
+\newline\textcolor{red}{\(\blacktriangleleft\) \textbf{WIP=5/5}}
+&
+\small
+\textbf{B-01} Registro básico \newline \emph{labels:} business,auth \newline \emph{reviewer:} Dev-B \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{E-02} Secretos (OAuth/SMTP) \newline \emph{labels:} enabler,security,auth \newline \emph{reviewer:} DevOps \newline \emph{pts:} 2
+\newline\textcolor{red}{\(\blacktriangleleft\) \textbf{WIP=2/4}}
+
+\small
+\textbf{B-02} Login (tests) \newline \emph{labels:} business,auth \newline \emph{qa:} QA-1 \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{B-04} Listado (tests) \newline \emph{labels:} business,catalog \newline \emph{qa:} QA-2 \newline \emph{pts:} 3
+\newline\hrule\newline
+\textbf{E-01} CI (pipeline) \newline \emph{labels:} enabler,ci,tests \newline \emph{qa:} QA-1 \newline \emph{pts:} 2
+\newline\textcolor{red}{\(\blacktriangleleft\) \textbf{WIP=3/5}}
+&
+\small
+\textbf{B-07} Expiración de sesión \newline \emph{labels:} business,auth,DoD-ok \newline \emph{pts:} 2
+\newline\hrule\newline
+\textbf{B-08} Estado vacío catálogo \newline \emph{labels:} business,catalog,DoD-ok \newline \emph{pts:} 1
+\\
+\end{tabularx}
+
+\end{landscape}
+\newpage
+
+
+
+\section*{Cómo evidenciar cumplimiento/violación de WIP}
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{In Progress}: 5/5 \(\Rightarrow\) al límite (correcto). Nadie debe \emph{pull} otra tarjeta hasta liberar una.
+  \item \textbf{Code Review}: 2/4 \(\Rightarrow\) capacidad disponible; preferir \emph{pull} aquí antes que abrir nuevo trabajo.
+  \item \textbf{Testing}: 3/5 \(\Rightarrow\) holgura; si sube a 5/5, activar \emph{swarming} (desarrolladores apoyan QA).
+  \item \textbf{WIP personal}: cada dev con \(\leq 1\) tarjeta en \texttt{In Progress}. Si alguien toma 2, marcar \texttt{bloqueado} o reasignar.
+\end{itemize}
+
+\section*{Reglas operativas (para la wiki del proyecto)}
+\begin{tcolorbox}
+\textbf{Pull}: siempre \emph{pull} desde la columna de la derecha con capacidad (CR \(\to\) Test) antes de abrir nuevo trabajo en \texttt{To Do}.\\[2pt]
+\textbf{Prioridad}: mantener \emph{swimlane} de épica activa en primer lugar (p.ej., Autenticación).\\[2pt]
+\textbf{Swarming}: si \texttt{Testing} alcanza WIP, dos devs se suman a estabilizar pruebas/fixtures.\\[2pt]
+\textbf{Bloqueos}: usar etiqueta \texttt{bloqueado} con causa y fecha; revisar en stand-up.\\[2pt]
+\textbf{DoD}: pasar a \texttt{Done} solo con PR revisado, tests OK en CI y despliegue a \emph{staging}; añadir \texttt{DoD-ok}.
+\end{tcolorbox}
+
+\section*{Checklist de evaluación (pauta)}
+\begin{itemize}[leftmargin=1.5em]
+  \item Columas configuradas: \texttt{To Do}, \texttt{In Progress}, \texttt{Code Review}, \texttt{Testing}, \texttt{Done}.
+  \item WIP visibles y razonados: \(\leq 5\) en \texttt{In Progress}, \(\leq 4\) en \texttt{CR}, \(\leq 5\) en \texttt{Testing}; WIP personal \(\leq 1\).
+  \item Evidencia de uso de \textbf{pull} y \textbf{swarming} al acercarse/rebasar WIP.
+  \item Etiquetas funcionales/técnicas (\texttt{business}, \texttt{enabler}, \texttt{auth}, \texttt{catalog}, \texttt{DoD-ok}, \texttt{bloqueado}).
+\end{itemize}
+
+\end{document}

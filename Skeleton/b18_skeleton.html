@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería Dulce Hogar - Responsive</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 768px) {
+            .mobile-hidden {
+                display: none;
+            }
+            .mobile-center {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Responsive -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">🥐 PANADERÍA ARTESANAL "DULCE HOGAR"</span>
+            
+            <!-- Botón Hamburguesa para Mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <button class="btn btn-outline-primary me-2">Carrito (3)</button>
+                    <button class="btn btn-outline-secondary">Mi Cuenta</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Vista Móvil Optimizada -->
+        <div class="d-block d-md-none">
+            <!-- Header Móvil -->
+            <div class="text-center mb-3">
+                <h4>🥐 DULCE HOGAR</h4>
+            </div>
+            
+            <!-- Buscador Móvil -->
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar productos...">
+                <button class="btn btn-primary">🔍</button>
+            </div>
+            
+            <!-- Categorías Móvil -->
+            <div class="row text-center mb-3">
+                <div class="col-4">
+                    <div class="p-2 border rounded">
+                        <div>🥐</div>
+                        <small>Facturas</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded">
+                        <div>🎂</div>
+                        <small>Pasteles</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 border rounded">
+                        <div>🥖</div>
+                        <small>Panes</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Productos Móvil -->
+            <h6 class="mb-3">PRODUCTOS DESTACADOS</h6>
+            
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-3 text-center">
+                            <h3>🥐</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="mb-1">Facturas Mixtas</h6>
+                            <p class="mb-1 text-primary">$4.500</p>
+                            <small class="text-warning">⭐4.8</small>
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-primary btn-sm">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-3 text-center">
+                            <h3>🎂</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="mb-1">Torta Chocolate</h6>
+                            <p class="mb-1 text-primary">$8.990</p>
+                            <small class="text-warning">⭐4.9</small>
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-primary btn-sm">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vista Desktop (se oculta en móvil) -->
+        <div class="d-none d-md-block">
+            <h4>Catálogo Completo - Vista Desktop</h4>
+            <p>Esta vista solo se muestra en pantallas grandes</p>
+        </div>
+        
+        <!-- Navegación Inferior Móvil -->
+        <div class="d-block d-md-none fixed-bottom bg-light border-top">
+            <div class="container">
+                <div class="row text-center py-2">
+                    <div class="col-3">
+                        <div>🏠</div>
+                        <small>Inicio</small>
+                    </div>
+                    <div class="col-3">
+                        <div>🔍</div>
+                        <small>Buscar</small>
+                    </div>
+                    <div class="col-3">
+                        <div>🛒</div>
+                        <small>Carrito</small>
+                    </div>
+                    <div class="col-3">
+                        <div>👤</div>
+                        <small>Cuenta</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

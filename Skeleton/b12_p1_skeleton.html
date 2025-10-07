@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería Dulce Hogar - Asignar Repartidores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand">🥐 PANADERÍA ARTESANAL "DULCE HOGAR"</span>
+            <div class="d-flex">
+                <span class="navbar-text me-3">Modo Administrador</span>
+                <button class="btn btn-outline-secondary">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Gestión de Entregas - Asignar Repartidores</h2>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0">Pedidos Pendientes de Asignación (3)</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Pedido 1 -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="text-warning">#PAN-2025-016 - URGENTE</h6>
+                                        <p class="mb-1">🎂 Torta Cumpleaños - $12.990</p>
+                                        <p class="mb-1 text-muted">📍 Av. Panaderos 456 - 2.3 km</p>
+                                        <p class="mb-1 text-muted">⏰ Entrega: 11:30 AM</p>
+                                        <p class="mb-0 text-muted">👤 Cliente: Ana López - 📞 +56 9 8765 4321</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary btn-sm" onclick="location.href='b12-pantalla2.html'">
+                                            ASIGNAR REPARTIDOR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pedido 2 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6>#PAN-2025-017</h6>
+                                        <p class="mb-1">🥖 Panes Variados - $7.500</p>
+                                        <p class="mb-1 text-muted">📍 Calle Harina 789 - 1.8 km</p>
+                                        <p class="mb-1 text-muted">⏰ Entrega: 12:00 PM</p>
+                                        <p class="mb-0 text-muted">👤 Cliente: Carlos Muñoz</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary btn-sm" onclick="location.href='b12-pantalla2.html'">
+                                            ASIGNAR REPARTIDOR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pedido 3 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6>#PAN-2025-018</h6>
+                                        <p class="mb-1">🥐 Facturas x2 - $9.000</p>
+                                        <p class="mb-1 text-muted">📍 Plaza Central 321 - 3.1 km</p>
+                                        <p class="mb-1 text-muted">⏰ Entrega: 12:30 PM</p>
+                                        <p class="mb-0 text-muted">👤 Cliente: Laura Fernández</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary btn-sm" onclick="location.href='b12-pantalla2.html'">
+                                            ASIGNAR REPARTIDOR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Repartidores Disponibles</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Repartidor 1 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6>Juan Pérez</h6>
+                                <p class="mb-1 text-success">✅ Disponible</p>
+                                <p class="mb-1 text-muted">🛵 Moto - Zona Norte</p>
+                                <p class="mb-1 text-muted">📦 3 entregas hoy</p>
+                                <p class="mb-0 text-muted">⭐ 4.8/5 (45 reviews)</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Repartidor 2 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6>María González</h6>
+                                <p class="mb-1 text-success">✅ Disponible</p>
+                                <p class="mb-1 text-muted">🚗 Auto - Zona Centro</p>
+                                <p class="mb-1 text-muted">📦 2 entregas hoy</p>
+                                <p class="mb-0 text-muted">⭐ 4.9/5 (38 reviews)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
