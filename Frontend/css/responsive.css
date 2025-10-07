@@ -63,3 +63,14 @@
         padding: 4rem 0;
     }
 }
+
+@media (max-width: 480px) {
+    .product-grid {
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .product-card {
+        margin-bottom: 1rem;
+    }
+}

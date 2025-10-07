@@ -716,11 +716,156 @@ function handleRegisterSubmit(e) {
     });
 }
 
+//------------------------- SISTEMA DE BÚSQUEDA ----------------------------
+function initSearchSystem() {
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search');
+    const resultsCount = document.getElementById('search-results-count');
+    
+    if (!searchInput) return;
+    
+    // Evento de búsqueda en tiempo real
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.trim().toLowerCase();
+        performSearch(searchTerm);
+        
+        // Mostrar/ocultar botón de limpiar
+        if (searchTerm.length > 0) {
+            clearSearchBtn.style.display = 'block';
+        } else {
+            clearSearchBtn.style.display = 'none';
+            if (resultsCount) resultsCount.textContent = '';
+        }
+    });
+    
+    // Botón para limpiar búsqueda
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            searchInput.focus();
+            clearSearchBtn.style.display = 'none';
+            performSearch('');
+            if (resultsCount) resultsCount.textContent = '';
+        });
+    }
+    
+    // Tecla Escape para limpiar búsqueda
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            searchInput.value = '';
+            performSearch('');
+            if (resultsCount) resultsCount.textContent = '';
+            clearSearchBtn.style.display = 'none';
+        }
+    });
+}
+
+function performSearch(searchTerm) {
+    const productCards = document.querySelectorAll('.product-card');
+    const productGrid = document.querySelector('.product-grid');
+    const resultsCount = document.getElementById('search-results-count');
+    
+    let visibleCount = 0;
+    
+    productCards.forEach(card => {
+        const productName = card.querySelector('h3').textContent.toLowerCase();
+        const productDescription = card.querySelector('.product-description').textContent.toLowerCase();
+        
+        // Buscar en nombre y descripción
+        const matchesSearch = searchTerm === '' || 
+                            productName.includes(searchTerm) || 
+                            productDescription.includes(searchTerm);
+        
+        if (matchesSearch) {
+            card.style.display = 'block';
+            visibleCount++;
+            
+            // Resaltar texto si hay búsqueda
+            if (searchTerm !== '') {
+                highlightText(card, searchTerm);
+            } else {
+                removeHighlight(card);
+            }
+        } else {
+            card.style.display = 'none';
+            removeHighlight(card);
+        }
+    });
+    
+    // Actualizar contador de resultados
+    if (resultsCount) {
+        if (searchTerm === '') {
+            resultsCount.textContent = '';
+        } else {
+            resultsCount.textContent = `${visibleCount} producto${visibleCount !== 1 ? 's' : ''} encontrado${visibleCount !== 1 ? 's' : ''}`;
+        }
+    }
+    
+    // Mostrar mensaje si no hay resultados
+    showNoResultsMessage(visibleCount === 0 && searchTerm !== '');
+}
+
+function highlightText(card, searchTerm) {
+    const productName = card.querySelector('h3');
+    const productDesc = card.querySelector('.product-description');
+    
+    // Guardar texto original si no existe
+    if (!productName.dataset.original) {
+        productName.dataset.original = productName.innerHTML;
+        productDesc.dataset.original = productDesc.innerHTML;
+    }
+    
+    // Resaltar en nombre
+    const nameRegex = new RegExp(`(${searchTerm})`, 'gi');
+    productName.innerHTML = productName.dataset.original.replace(
+        nameRegex, 
+        '<span class="search-highlight">$1</span>'
+    );
+    
+    // Resaltar en descripción
+    const descRegex = new RegExp(`(${searchTerm})`, 'gi');
+    productDesc.innerHTML = productDesc.dataset.original.replace(
+        descRegex, 
+        '<span class="search-highlight">$1</span>'
+    );
+}
+
+function removeHighlight(card) {
+    const productName = card.querySelector('h3');
+    const productDesc = card.querySelector('.product-description');
+    
+    // Restaurar texto original si existe
+    if (productName.dataset.original) {
+        productName.innerHTML = productName.dataset.original;
+        productDesc.innerHTML = productDesc.dataset.original;
+    }
+}
+
+function showNoResultsMessage(show) {
+    let noResultsMsg = document.getElementById('no-results-message');
+    
+    if (show && !noResultsMsg) {
+        noResultsMsg = document.createElement('div');
+        noResultsMsg.id = 'no-results-message';
+        noResultsMsg.className = 'no-results';
+        noResultsMsg.innerHTML = `
+            <h3>No encontramos productos</h3>
+            <p>Intenta con otros términos como "pan", "pastel" o "facturas"</p>
+        `;
+        
+        const productGrid = document.querySelector('.product-grid');
+        productGrid.parentNode.insertBefore(noResultsMsg, productGrid.nextSibling);
+    } else if (!show && noResultsMsg) {
+        noResultsMsg.remove();
+    }
+}
+
 //--------------------------------- EVENT LISTENERS ----------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
     loadCartFromStorage(); //Carga del carrito de compras al iniciar
     initHeroSlider(); // Inicializar carrusel del hero
     setupRegisterValidation(); // Configurar validación del formulario de registro
+    initSearchSystem();
 
     // Botones "Agregar al Carrito"
     const addToCartButtons = document.querySelectorAll('.btn-add-cart');
