@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Panadería Dulce Hogar</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>Dulce Hogar</h1>
+                </a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="index.html#productos" class="nav-link">Productos</a>
+                <a href="login.html" class="nav-link">Ingresar</a>
+                <a href="registro.html" class="nav-link">Registrarse</a>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main style="min-height: 80vh; display: flex; align-items: center; justify-content: center; margin-top: 60px;">
+        <section class="auth-section">
+            <div class="auth-container">
+                <h2>Iniciar Sesión</h2>
+                <form class="auth-form" id="login-form">
+                    <div class="form-group">
+                        <input type="email" id="login-email" placeholder="Email" required>
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="Ingresa tu contraseña" required>
+                        <small class="password-hint">Debe tener 8 caracteres mínimo e incluir 1 mayúscula</small>
+                        <div class="error-message" id="password-error"></div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="login-btn">Ingresar</button>
+                </form>
+                <div class="auth-links">
+                    <a href="registro.html" class="auth-link">¿No tienes cuenta? Regístrate</a>
+                    <a href="#olvide-password" class="auth-link">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
