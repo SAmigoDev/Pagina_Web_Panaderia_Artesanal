@@ -224,6 +224,127 @@ function showCartNotification(productName) {
     }, 2700); // Timepo de la animación antes de empezar a desaparecer
 }
 
+// ==================== FUNCIONES MEJORADAS PARA CARRITO ====================
+
+// Función para actualizar el carrito en el navbar
+function updateNavCart() {
+    const cartCounter = document.getElementById('cart-counter');
+    const navCart = document.getElementById('nav-cart');
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    
+    if (cartCounter) {
+        cartCounter.textContent = totalItems;
+    }
+    
+    if (navCart) {
+        // Actualizar clases según el estado
+        if (totalItems === 0) {
+            navCart.classList.add('empty');
+            navCart.classList.remove('has-items');
+            navCart.setAttribute('data-tooltip', 'Carrito vacío');
+        } else {
+            navCart.classList.remove('empty');
+            navCart.classList.add('has-items');
+            const totalPrice = cart.reduce((sum, item) => {
+                return sum + (parseFloat(item.price.replace('$', '').replace('.', '')) * item.quantity);
+            }, 0);
+            navCart.setAttribute('data-tooltip', `${totalItems} items - $${totalPrice.toLocaleString()}`);
+        }
+    }
+}
+
+// Función para agregar productos al carrito (modificada)
+function addToCart(productName, price) {
+    const existingItemIndex = cart.findIndex(item => item.name === productName);
+    
+    if (existingItemIndex !== -1) {
+        cart[existingItemIndex].quantity++;
+    } else {
+        const product = {
+            name: productName,
+            price: price,
+            quantity: 1
+        };
+        cart.push(product);
+    }
+    
+    updateCartCounter();
+    updateNavCart(); // ← Nueva línea
+    saveCartToStorage();
+    showCartNotification(productName);
+    renderCartItems();
+    
+    // Efecto visual en el carrito del navbar
+    const navCart = document.getElementById('nav-cart');
+    if (navCart) {
+        navCart.classList.add('adding-item', 'highlight');
+        setTimeout(() => {
+            navCart.classList.remove('adding-item', 'highlight');
+        }, 1000);
+    }
+}
+
+// Función para actualizar contador del carrito (modificada)
+function updateCartCounter() {
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    const cartCounter = document.getElementById('cart-counter');
+    
+    if (cartCounter) {
+        cartCounter.textContent = totalItems;
+        
+        // Animación cuando cambia el número
+        cartCounter.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            cartCounter.style.transform = 'scale(1)';
+        }, 300);
+    }
+    
+    updateNavCart(); // ← Nueva línea
+}
+
+// Modificar las funciones que afectan el carrito
+function increaseQuantity(index) {
+    cart[index].quantity++;
+    renderCartItems();
+    updateCartCounter();
+    updateNavCart(); // ← Nueva línea
+    saveCartToStorage();
+    return false;
+}
+
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+    } else {
+        removeFromCart(index);
+        return false;
+    }
+    renderCartItems();
+    updateCartCounter();
+    updateNavCart(); // ← Nueva línea
+    saveCartToStorage();
+    return false;
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCartItems();
+    updateCartCounter();
+    updateNavCart(); // ← Nueva línea
+    saveCartToStorage();
+    return false;
+}
+
+// Cargar carrito desde localStorage (modificada)
+function loadCartFromStorage() {
+    const savedCart = localStorage.getItem('dulceHogarCart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartCounter();
+        updateNavCart(); // ← Nueva línea
+    }
+}
+
 //------------------- Función para proceder al pago ---------------------
 function proceedToCheckout() {
     if (cart.length === 0) {
@@ -256,19 +377,34 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-    // Mínimo 8 caracteres, al menos 1 mayúscula
-    const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
-    return passwordRegex.test(password);
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    
+    return password.length >= minLength && 
+           hasUpperCase && 
+           hasLowerCase && 
+           hasNumbers;
 }
 
 function showError(inputId, message) {
+    console.log('❌ showError llamado:', inputId, message);
+    
     const errorElement = document.getElementById(inputId);
     const inputElement = document.querySelector(`#${inputId.replace('-error', '')}`);
     
     if (errorElement && inputElement) {
         errorElement.textContent = message;
-        inputElement.classList.add('invalid');
-        inputElement.classList.remove('valid');
+        errorElement.style.display = 'block';
+        errorElement.style.color = '#dc3545';
+        errorElement.style.fontSize = '0.8rem';
+        errorElement.style.marginTop = '0.25rem';
+        errorElement.style.minHeight = '1rem';
+
+        inputElement.style.borderColor = '#dc3545';
+        inputElement.style.backgroundColor = '#fff8f8';
+        inputElement.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.2)';
     }
 }
 
@@ -278,33 +414,71 @@ function clearError(inputId) {
     
     if (errorElement && inputElement) {
         errorElement.textContent = '';
-        inputElement.classList.remove('invalid');
-        inputElement.classList.remove('valid');
+        errorElement.style.display = 'none';
+
+        inputElement.style.borderColor = '';
+        inputElement.style.backgroundColor = '';
+        inputElement.style.boxShadow = '';
     }
 }
 
 function markFieldValid(inputId) {
     const inputElement = document.querySelector(`#${inputId}`);
     if (inputElement) {
-        inputElement.classList.add('valid');
-        inputElement.classList.remove('invalid');
+        inputElement.style.borderColor = '#28a745';
+        inputElement.style.backgroundColor = '#f8fff9';
+        inputElement.style.boxShadow = '0 0 0 2px rgba(40, 167, 69, 0.2)';
     }
 }
 
 function showSuccess(message) {
-    // Creación del elemento de éxito si no existe
-    let successElement = document.querySelector('.success-message');
-    if (!successElement) {
-        successElement = document.createElement('div');
-        successElement.className = 'success-message';
-        document.querySelector('#login-form').appendChild(successElement);
-    }
-    successElement.textContent = message;
+    console.log('🎉 showSuccess llamado:', message);
     
-    // Remover después de 3 segundos
+    // Primero, limpiar cualquier mensaje anterior
+    const existingSuccess = document.querySelector('.success-message');
+    if (existingSuccess) {
+        existingSuccess.remove();
+    }
+    
+    // Crear elemento de éxito MÁS VISIBLE
+    const successElement = document.createElement('div');
+    successElement.className = 'success-message';
+    successElement.innerHTML = `
+        <div style="
+            color: #155724;
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        ">
+            ✅ ${message}
+        </div>
+    `;
+    
+    // Insertar ANTES del formulario para que sea más visible
+    const form = document.querySelector('#login-form') || document.querySelector('#register-form');
+    const authContainer = document.querySelector('.auth-container');
+    
+    if (form && authContainer) {
+        authContainer.insertBefore(successElement, form);
+        console.log('✅ Mensaje de éxito insertado');
+    } else {
+        console.log('❌ No se pudo encontrar donde insertar el mensaje');
+    }
+    
+    // Remover después de 4 segundos
     setTimeout(() => {
-        successElement.textContent = '';
-    }, 3000);
+        if (successElement.parentNode) {
+            successElement.remove();
+            console.log('🗑️ Mensaje de éxito removido');
+        }
+    }, 4000);
 }
 
 // Base de datos simulada de usuarios
@@ -377,13 +551,17 @@ function simulateLogin(email, password) {
     });
 }
 
-// Manejo del envío del formulario
+//--------------------------- ENVIO DEL FORMULARIO ------------------------------
 function handleLoginSubmit(e) {
     e.preventDefault();
+    console.log('🔵 handleLoginSubmit EJECUTADO');
     
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     const loginBtn = document.getElementById('login-btn');
+    
+    console.log('📧 Email:', email);
+    console.log('🔑 Password:', password);
     
     if (!loginBtn) return;
     
@@ -391,16 +569,27 @@ function handleLoginSubmit(e) {
     let isValid = true;
     
     if (!validateEmail(email)) {
+        console.log('❌ Email inválido');
         showError('email-error', 'Por favor ingresa un email válido');
         isValid = false;
+    } else {
+        clearError('email-error');
     }
     
-    if (!validatePassword(password)) {
-        showError('password-error', 'La contraseña debe tener mínimo 8 caracteres e incluir 1 mayúscula');
+    if (password.trim() === '') {
+        console.log('❌ Password vacío');
+        showError('password-error', 'La contraseña es requerida');
         isValid = false;
+    } else {
+        clearError('password-error');
     }
     
-    if (!isValid) return;
+    if (!isValid) {
+        console.log('❌ Formulario no válido, deteniendo envío');
+        return;
+    }
+    
+    console.log('✅ Formulario válido, procediendo con login...');
     
     // Simulación del proceso de login
     loginBtn.classList.add('btn-loading');
@@ -408,24 +597,30 @@ function handleLoginSubmit(e) {
     loginBtn.textContent = '';
     
     simulateLogin(email, password).then(success => {
+        console.log('🔐 Resultado del login:', success);
+        
         setTimeout(() => {
             loginBtn.classList.remove('btn-loading');
             loginBtn.disabled = false;
             loginBtn.textContent = 'Ingresar';
             
             if (success) {
+                console.log('✅ Login exitoso');
                 showSuccess('¡Login exitoso! Redirigiendo...');
-                // Aquí iría la redirección real
                 setTimeout(() => {
-                    alert(`¡Bienvenido ${email}! En una implementación real, aquí se redirigiría al dashboard del usuario.`);
-                    // Limpiar formulario
+                    alert(`¡Bienvenido ${email}!`);
                     document.getElementById('login-form').reset();
                     clearError('email-error');
                     clearError('password-error');
                 }, 2000);
             } else {
-                showError('password-error', 'Credenciales incorrectas. Prueba con: ana@example.com / Clave2025');
+                console.log('❌ Login fallido');
                 
+                // ✅ MOSTRAR ERRORES VISUALES EN AMBOS CAMPOS - SIN ALERT
+                showError('email-error', 'Correo electrónico no encontrado o contraseña incorrecta');
+                showError('password-error', 'Verifica tus credenciales e intenta nuevamente');
+                
+                // Aplicar estilos de error a ambos inputs
                 const emailInput = document.getElementById('login-email');
                 const passwordInput = document.getElementById('login-password');
                 
@@ -435,23 +630,93 @@ function handleLoginSubmit(e) {
                     passwordInput.classList.add('invalid');
                     passwordInput.classList.remove('valid');
                 }
+                
+                // ✅ MOSTRAR UN MENSAJE DE ÉXITO/ERROR GENERAL EN EL FORMULARIO
+                showFormMessage('error', 'Credenciales incorrectas.');
             }
-        }, 500);
+        }, 800);
     });
 }
 
-//------------------------------------ SECCION DEL CARRUSEL DEL HERO ---------------------------------------
+//------------------------- MENSAJES GENERALES ---------------------------------------
+function showFormMessage(type, message) {
+    // Eliminar mensaje anterior si existe
+    const existingMessage = document.getElementById('form-general-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Crear nuevo mensaje
+    const messageElement = document.createElement('div');
+    messageElement.id = 'form-general-message';
+    
+    if (type === 'error') {
+        messageElement.innerHTML = `
+            <div style="
+                color: #721c24;
+                background: #f8d7da;
+                border: 1px solid #f5c6cb;
+                padding: 1rem;
+                border-radius: 5px;
+                margin: 1rem 0;
+                text-align: center;
+                font-size: 0.9rem;
+            ">
+                ❌ ${message}
+            </div>
+        `;
+    } else {
+        messageElement.innerHTML = `
+            <div style="
+                color: #155724;
+                background: #d4edda;
+                border: 1px solid #c3e6cb;
+                padding: 1rem;
+                border-radius: 5px;
+                margin: 1rem 0;
+                text-align: center;
+                font-size: 0.9rem;
+            ">
+                ✅ ${message}
+            </div>
+        `;
+    }
+    
+    // Insertar en el formulario
+    const form = document.querySelector('#login-form') || document.querySelector('#register-form');
+    if (form) {
+        form.parentNode.insertBefore(messageElement, form);
+    }
+    
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+        if (messageElement.parentNode) {
+            messageElement.remove();
+        }
+    }, 5000);
+}
+
+//------------------------- SECCION DEL CARRUSEL DEL HERO ---------------------------------------
 function initHeroSlider() {
     const slides = document.querySelectorAll('.slide');
     const indicators = document.querySelectorAll('.indicator');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
     
+    // VERIFICAR QUE EXISTAN ELEMENTOS
+    if (slides.length === 0) {
+        console.log('❌ No se encontraron slides');
+        return;
+    }
+    
     let currentSlide = 0;
     let slideInterval;
 
     // Función para mostrar slide específico
     function showSlide(index) {
+        // VERIFICAR QUE LOS SLIDES EXISTAN
+        if (slides.length === 0 || indicators.length === 0) return;
+        
         // Remover clase active de todos los slides
         slides.forEach(slide => slide.classList.remove('active'));
         indicators.forEach(indicator => indicator.classList.remove('active'));
@@ -460,9 +725,11 @@ function initHeroSlider() {
         if (index >= slides.length) currentSlide = 0;
         if (index < 0) currentSlide = slides.length - 1;
         
-        // Agregar clase active al slide actual
-        slides[currentSlide].classList.add('active');
-        indicators[currentSlide].classList.add('active');
+        // VERIFICAR QUE EL SLIDE ACTUAL EXISTA
+        if (slides[currentSlide] && indicators[currentSlide]) {
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
     }
 
     // Función para siguiente slide
@@ -479,7 +746,7 @@ function initHeroSlider() {
         showSlide(currentSlide);
     }
 
-    // Event listeners para controles
+    // Event listeners para controles - SOLO SI EXISTEN
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             nextSlide();
@@ -494,7 +761,7 @@ function initHeroSlider() {
         });
     }
 
-    // Event listeners para indicadores
+    // Event listeners para indicadores - SOLO SI EXISTEN
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
             currentSlide = index;
@@ -503,7 +770,7 @@ function initHeroSlider() {
         });
     });
 
-    // Auto-avance cada 8 segundos
+    // Auto-avance cada 10 segundos
     function startInterval() {
         slideInterval = setInterval(nextSlide, 10000);
     }
@@ -516,7 +783,7 @@ function initHeroSlider() {
     // Iniciar carrusel
     startInterval();
 
-    // Pausar carrusel cuando el mouse está sobre él
+    // Pausar carrusel cuando el mouse está sobre él - SOLO SI EXISTE
     const heroSlider = document.querySelector('.hero-slider');
     if (heroSlider) {
         heroSlider.addEventListener('mouseenter', () => {
@@ -582,12 +849,30 @@ function setupRegisterValidation() {
 
     // Validación de contraseña
     if (passwordInput) {
-        passwordInput.addEventListener('blur', function() {
-            if (!validatePassword(this.value)) {
-                showError('password-error', 'Mínimo 8 caracteres con al menos 1 mayúscula');
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.trim() === '') {
+                showError('password-error', 'La contraseña es requerida');
+            } else if (password.length < 8) {
+                showError('password-error', 'Mínimo 8 caracteres');
+            } else if (!/(?=.*[A-Z])/.test(password)) {
+                showError('password-error', 'Debe incluir al menos 1 mayúscula');
+            } else if (!/(?=.*[a-z])/.test(password)) {
+                showError('password-error', 'Debe incluir al menos 1 minúscula');
+            } else if (!/(?=.*\d)/.test(password)) {
+                showError('password-error', 'Debe incluir al menos 1 número');
             } else {
                 clearError('password-error');
                 markFieldValid('register-password');
+            }
+        });
+
+        // Validación más estricta al perder foco
+        passwordInput.addEventListener('blur', function() {
+            const password = this.value;
+            if (!validatePassword(password)) {
+                showError('password-error', 'Mínimo 8 caracteres con 1 mayúscula, 1 minúscula y 1 número');
             }
         });
     }
@@ -643,6 +928,7 @@ function simulateRegister(userData) {
 // Manejar envío del formulario de registro
 function handleRegisterSubmit(e) {
     e.preventDefault();
+    console.log('✅ Formulario registro enviado');
     
     const name = document.getElementById('register-name').value;
     const email = document.getElementById('register-email').value;
@@ -654,7 +940,7 @@ function handleRegisterSubmit(e) {
     
     if (!registerBtn) return;
     
-    // Validación final antes de enviar
+    // Validación final MÁS ESTRICTA antes de enviar
     let isValid = true;
     
     if (!validateName(name)) {
@@ -668,7 +954,7 @@ function handleRegisterSubmit(e) {
     }
     
     if (!validatePassword(password)) {
-        showError('password-error', 'Mínimo 8 caracteres con al menos 1 mayúscula');
+        showError('password-error', 'La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 minúscula y 1 número');
         isValid = false;
     }
     
@@ -677,7 +963,7 @@ function handleRegisterSubmit(e) {
         isValid = false;
     }
     
-    if (!validatePhone(phone)) {
+    if (phone && !validatePhone(phone)) {
         showError('phone-error', 'Formato de teléfono inválido');
         isValid = false;
     }
@@ -687,9 +973,12 @@ function handleRegisterSubmit(e) {
         isValid = false;
     }
     
-    if (!isValid) return;
+    if (!isValid) {
+        // Mostrar mensaje general de error
+        showError('register-general-error', 'Por favor corrige los errores en el formulario');
+        return;
+    }
     
-    // Simular proceso de registro
     registerBtn.classList.add('btn-loading');
     registerBtn.disabled = true;
     registerBtn.textContent = '';
@@ -697,7 +986,6 @@ function handleRegisterSubmit(e) {
     const userData = { name, email, password, phone };
     
     simulateRegister(userData).then(result => {
-        // Restaurar botón
         setTimeout(() => {
             registerBtn.classList.remove('btn-loading');
             registerBtn.disabled = false;
@@ -706,7 +994,6 @@ function handleRegisterSubmit(e) {
             if (result.success) {
                 showSuccess('¡Cuenta creada exitosamente! Redirigiendo...');
                 setTimeout(() => {
-                    // Redirigir a login con el email pre-llenado
                     window.location.href = `login.html?email=${encodeURIComponent(email)}`;
                 }, 2000);
             } else {
@@ -860,26 +1147,73 @@ function showNoResultsMessage(show) {
     }
 }
 
+// ==================== MANEJO DE ESTADOS ACTIVOS EN NAVBAR ====================
+
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        
+        const linkHref = link.getAttribute('href');
+        if (linkHref === currentPage || 
+            (currentPage === 'index.html' && linkHref === 'index.html') ||
+            (currentPage === 'productos.html' && linkHref === 'productos.html') ||
+            (currentPage === 'login.html' && linkHref === 'login.html') ||
+            (currentPage === 'registro.html' && linkHref === 'registro.html')) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// ==================== ANIMACIONES PARA MENÚ MÓVIL ====================
+
+function setupMobileMenuAnimations() {
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = document.querySelectorAll('.nav-menu .nav-link, .nav-menu .nav-cart');
+    
+    navLinks.forEach((link, index) => {
+        link.style.setProperty('--item-index', index);
+    });
+}
+
 //--------------------------------- EVENT LISTENERS ----------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
-    loadCartFromStorage(); //Carga del carrito de compras al iniciar
-    initHeroSlider(); // Inicializar carrusel del hero
-    setupRegisterValidation(); // Configurar validación del formulario de registro
-    initSearchSystem();
+    console.log('🚀 DOM Cargado - JavaScript funcionando');
+    
+    loadCartFromStorage();
+    setupRegisterValidation();
+    setActiveNavLink();
+    setupMobileMenuAnimations();
+    
+    // INICIALIZAR SOLO SI EXISTEN LOS ELEMENTOS
+    const heroSlider = document.querySelector('.hero-slider');
+    if (heroSlider) {
+        initHeroSlider();
+    }
+    
+    // Búsqueda - solo si existe
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        initSearchSystem();
+    }
 
-    // Botones "Agregar al Carrito"
+    // Botones "Agregar al Carrito" - solo en index.html
     const addToCartButtons = document.querySelectorAll('.btn-add-cart');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const productCard = this.closest('.product-card');
-            const productName = productCard.querySelector('h3').textContent;
-            const productPrice = productCard.querySelector('.product-price').textContent;
-            
-            addToCart(productName, productPrice);
+    if (addToCartButtons.length > 0) {
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productCard = this.closest('.product-card');
+                const productName = productCard.querySelector('h3').textContent;
+                const productPrice = productCard.querySelector('.product-price').textContent;
+                
+                addToCart(productName, productPrice);
+            });
         });
-    });
+    }
 
-    // Abrir modal al hacer click en "Carrito"
+    // Carrito - solo si existe en la página
     const cartLink = document.querySelector('a[href="#carrito"]');
     if (cartLink) {
         cartLink.addEventListener('click', function(e) {
@@ -888,20 +1222,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Cerrar modal
-    closeModal.addEventListener('click', closeCartModal);
+    // Modal del carrito - solo si existe
+    if (closeModal) {
+        closeModal.addEventListener('click', closeCartModal);
+    }
 
-    // Cerrar modal al hacer click fuera
-    window.addEventListener('click', function(e) {
-        if (e.target === cartModal) {
-            closeCartModal();
-        }
-    });
+    // Cerrar modal al hacer click fuera - solo si existe
+    if (cartModal) {
+        window.addEventListener('click', function(e) {
+            if (e.target === cartModal) {
+                closeCartModal();
+            }
+        });
+    }
 
-    // Botón de checkout
+    const navCart = document.getElementById('nav-cart');
+    if (navCart) {
+        navCart.addEventListener('click', function(e) {
+            e.preventDefault();
+            openCartModal();
+        });
+    }
+
+    updateNavCart();
+
+    // Botón de checkout - solo si existe
     const checkoutBtn = document.querySelector('.btn-checkout');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', proceedToCheckout);
+    }
+
+    // Event listeners del carrito - SOLO SI EXISTE EL CONTENEDOR
+    if (cartItemsContainer) {
+        cartItemsContainer.addEventListener('click', function(e) {
+            if (e.target.matches('[data-action]')) {
+                e.preventDefault();
+                const action = e.target.getAttribute('data-action');
+                const index = parseInt(e.target.getAttribute('data-index'));
+                
+                switch(action) {
+                    case 'increase':
+                        increaseQuantity(index);
+                        break;
+                    case 'decrease':
+                        decreaseQuantity(index);
+                        break;
+                    case 'remove':
+                        removeFromCart(index);
+                        break;
+                }
+            }
+        });
     }
 
     // Configuración de validación de formularios
@@ -910,34 +1281,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Manejo del envío del formulario de login
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
+        console.log('✅ Login form encontrado, agregando event listener');
         loginForm.addEventListener('submit', handleLoginSubmit);
+    } else {
+        console.log('❌ Login form NO encontrado');
     }
-
-    // Manejar clicks en los botones del carrito (delegación de eventos)
-    cartItemsContainer.addEventListener('click', function(e) {
-        if (e.target.matches('[data-action]')) {
-            e.preventDefault();
-            const action = e.target.getAttribute('data-action');
-            const index = parseInt(e.target.getAttribute('data-index'));
-            
-            switch(action) {
-                case 'increase':
-                    increaseQuantity(index);
-                    break;
-                case 'decrease':
-                    decreaseQuantity(index);
-                    break;
-                case 'remove':
-                    removeFromCart(index);
-                    break;
-            }
-        }
-    });
 
     // Manejo del envío del formulario de registro
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
+        console.log('✅ Register form encontrado, agregando event listener');
         registerForm.addEventListener('submit', handleRegisterSubmit);
+    } else {
+        console.log('❌ Register form NO encontrado');
     }
     
     // Pre-llenar email si viene por URL (desde el registro)
@@ -946,4 +1302,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (emailParam && document.getElementById('login-email')) {
         document.getElementById('login-email').value = emailParam;
     }
+    
+    console.log('✅ Todos los event listeners configurados');
 });
